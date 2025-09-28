@@ -1,35 +1,78 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
 
+// function to swap card
+function App() {
+  const [count, setCount] = useState(0);
+  const [flip,setFlip] = useState(0);
+
+
+  // Function to swap card
+  function SwapCard(){
+    if(count == 1){
+      setCount(count-1);
+      setFlip(flip-1);      
+    }else{
+      setCount(count+1);
+      setFlip(flip+1);
+    }
+
+  }
+
+  // Card component
+  function FlashCard({frontText,backText}){
+    // Needs front and back text
+    return(
+        <p className = {`cardText ${flip ? "flip" : ""}`}>
+          {count==0 ? frontText : backText}
+        </p>
+    )
+  }
+  
   return (
     <>
+      {/* Title */}
+      <div className="headerContainer">
+        <div className="innerHeaderContainer">
+          <h1>Cybersecurity Knowledge!</h1>
+          <h3>Test your elementary CS knowledge here!</h3>
+        </div>
+      </div>
+
+      {/* Number of cards */}
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h4>
+          Number of cards in set: 15
+        </h4>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      {/* Card itself */}
+      <div className={`cardContainer ${flip ? "flip" : ""}`} onClick={SwapCard}>
+        <FlashCard frontText={"Hello"} backText={"Also hello"}/>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
 
 export default App
+
+// Criteria
+// Create a new Component
+// Share a small piece of data from one component to the next
+// Utilize useState() to create state variables to help control component behavior
+// use the onClick() event to call a method
+// create multiple div sections to keep track of different chunks of information
+// use those div sections as the basis for CSS styling
+
+// Thoughts:
+//
+// What data would be shared between components?
+//    - Perhaps the position its in?  (i.e. how many cards are left)
+//  
+//     
+// Create multiple div sections to keep track of different chunks of information
+//    - Could include: Card itself, number of cards left, index of current card
+//
+//
+
