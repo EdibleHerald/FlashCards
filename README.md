@@ -4,7 +4,7 @@ Submitted by: Harold Escorcia
 
 This web app: Has multiple flashcards from a personal stack that I used to study for the SOCOA 1 certification by BCR cyber!
 
-Time spent: 0 hours spent in total
+Time spent: 3 hours spent in total
 
 ## Required Features
 
@@ -54,9 +54,11 @@ GIF created with ...
 
 Describe any challenges encountered while building the app.
 
+1. This is written roughly 3 hours in. I spent most of that time trying to figure out how to flip the flash card. Note to self: Just google how to do it yourself next time. The real challenge there was just trying to figure out why the transition wouldn't play which was because I originally had the component be the entire card itself rather than just the text. So react would replace the entire element with the new one when I used the useState() method to apply .flip to the card. Thus the transition didn't play since the value of transform technically didn't change. I'm gonna try to finish this project faster instead of getting lost like last time. 
+
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright 2025 Harold Escorcia
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
