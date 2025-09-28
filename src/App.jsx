@@ -10,11 +10,9 @@ function App() {
 
   // Function to swap card
   function SwapCard(){
-    if(count == 1){
-      setCount(count-1);
+    if(flip == 1){
       setFlip(flip-1);      
     }else{
-      setCount(count+1);
       setFlip(flip+1);
     }
 
@@ -35,7 +33,7 @@ function App() {
       {/* Title */}
       <div className="headerContainer">
         <div className="innerHeaderContainer">
-          <h1>Cybersecurity Knowledge!</h1>
+          <h1>Cybersecurity Quiz!</h1>
           <h3>Test your elementary CS knowledge here!</h3>
         </div>
       </div>
