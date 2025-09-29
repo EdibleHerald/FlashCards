@@ -156,14 +156,10 @@ function App() {
       }else{
         if(((tempVar + 1) > histDirLength)){
           // Does nothing
-          console.log("ran");
         }else{
           tempVar+=1;
           if(!(tempVar == histDirLength)){
             setCurrMem(currMem + 1);
-            console.log("added one");
-            console.log(currMem);
-            console.log(tempVar);
           }
           setCount(histDir[histDirLength-tempVar]);
         }
@@ -183,12 +179,6 @@ function App() {
         // This should only help to navigate histDir, not change it in any way
         let histDirLength = Object.keys(histDir).length;
         let tempVar = currMem;
-
-        console.log("x");
-        console.log(histDir);
-        console.log(currDir);
-        console.log(currMem);
-        console.log("x");
 
         // Ex. currMem = 2 --> currMem = 1 , card stays the same
         // Tempvar = 1 --> tempVar = 0
@@ -217,7 +207,7 @@ function App() {
 
   }
 
-  //TEST
+  
   function GetNextCard(textDirLength){
   // All variables here are declared but not initalized just for easy tracking purposes.
     let randNum;
@@ -269,13 +259,8 @@ function App() {
 
       setCount(randNum);
     }
-    console.log("x");
-    console.log(histDir);
-    console.log(currDir);
-    console.log(currMem);
-    console.log("x");
   }
-  //TEST
+
 
   // Function to check currDir using randNum
   function CheckCurrDir(randNum){
