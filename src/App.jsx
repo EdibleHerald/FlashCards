@@ -79,8 +79,8 @@ function App() {
   //
 
   // Function to handle card
-  function SwapCard(dir){ 
-    // "dir" for "direction", given by the buttons to indicate....well, direction.
+  function SwapCard(d){ 
+    // "d" for "direction", given by the buttons to indicate....well, direction.
     // 0 for "back" and 1 for "foward"
 
     // I'll need the length of textDirectory multiple times so I'll initalize it here.
@@ -88,9 +88,19 @@ function App() {
     
     // Lets start basic: seperate actions based on dir
 
-    if(dir == 0){ // "back"
+    if(d == 0){ // "back"
+      // Things we need to keep track of:
+      // - currMem
+      // - count
+      // NO NEED TO MANIPULATE currDir or histDir in ANY way. We're only reading from histDir
 
-    }else if (dir == 1){ // "foward"
+      // First, increase currMem IMMEDIATELY so we can access the previous entry
+      setCurrMem(currMem + 1);
+
+      setCount(currMem);
+      // Done!!
+
+    }else if (d == 1){ // "foward"
       // Few things to keep track of here:
       // - histDir
       // - currDir
@@ -98,7 +108,14 @@ function App() {
       // IMPORTANT: We need to consider currMem, how will the function know if we're in histDir or not?
       // We need to assume that currMem would have already been >0 by now
       if(currMem > 0){ // We'd now be looking in histDir
+        // Assumes we're we're backed up and need to progress to currMem = 0
+        // CRITICALLY: We SHOULD NOT update histDir OR currDir 
+        // This should only help to navigate histDir, not change it in any way
 
+        
+        setCount(currMem);
+        setCurrMem(currMem - 1);
+        // Should be as simple as that!
       }else if(currMem == 0){
         // All variables here are declared but not initalized just for easy tracking purposes.
         let randNum;
@@ -109,6 +126,7 @@ function App() {
 
         randNum = genNum(textDirLength);
         
+        // e.g. randNum = 7 
 
         // add randNum to currDir
           // But ONLY if it isn't already in currDir
@@ -120,14 +138,12 @@ function App() {
           // number already exists within currDir. 
           // Given our structure and randNum not calculating previously chosen numbers,
           // this must mean that currDir is full. 
-          // So we must empty currDir
+          // We'll use tempArray = [] as a temporary currDir
           // Then generate a new number!
           tempArray = [];
-          setCurrDir(tempArray);
           
           newNum = genNum(textDirLength);
 
-          tempArray = currDir;
           tempArray.push(newNum);
           setCurrDir(tempArray);
 
@@ -136,6 +152,7 @@ function App() {
           tempArray = histDir;
           tempArray.push(newNum);
           setHistDir(tempArray);
+          setCount(newNum);
         }else{
           // randNum DOESN'T conflict with currDir
           // No checks needed here
@@ -146,10 +163,10 @@ function App() {
           tempArray = histDir;
           tempArray.push(randNum);
           setHistDir(tempArray);
+
+          setCount(randNum);
         }
-        
-        // Set count = randNum
-        setCount(count);
+        console.log(currDir);
       }
     }else{
       // May write more verbose logging if needed
@@ -165,13 +182,23 @@ function App() {
     // We set to 0 with the assumption that it will only ever return 0 or 1. (there shouldn't be copies within currDir anyways)
     // If it returns anything else, then I'll flag it. Is practical and acts as a bit of debugging.
     let counter = 0;
+    let currDirLength = Object.keys(currDir).length;
 
-    for(e in currDir){
-      if(randNum == e){
+    // IMPORTANT DISTINCTION:
+    // for...in - gets Array elements as STRINGS
+    // for...of - gets array elements as the ACTUAL VALUE of the variable
+
+                // for(let e = 0;e<(currDirLength-1);e++){
+                //   if(currDir[e] == randNum){
+                //     counter+=1;
+                //   }
+                // }
+    for(let e of currDir){
+      if(e == randNum){
         counter+=1;
       }
     }
-
+  
     if(counter == 0 || counter == 1){
       return counter;
     }else{
@@ -199,9 +226,12 @@ function App() {
       // Probably a better way to do it, but I'm getting tired :(
       return 1;
     }else{
+      // Problem:
+      // randNum needs to NOT be a number currently in currDir
+
       do{
-      randNum = Math.floor(Math.random()*(textDirLength-1)) + 1;
-      }while(randNum == count || randNum == 0 ); // Ensure randNum != previous index OR 0.
+        randNum = Math.floor(Math.random()*(textDirLength-1)) + 1;
+      }while(randNum == count || randNum == 0 || currDir.includes(randNum)); // Ensure randNum != previous index OR 0.
 
       return randNum;
     }
@@ -215,14 +245,20 @@ function App() {
       setFlip(flip+1);
     }
 
+    // For start card, flip back around.
+    if(count == 0){
+      setFlip(1);
+      SwapCard(1);
+    }
+
   }
 
   // Card component
-  function FlashCard({frontText,backText}){
+  function FlashCard(){
     // Needs front and back text
     return(
         <p className = {`cardText ${flip ? "flip" : ""}`}>
-          {flip==0 ? frontText : backText}
+          {flip==0 ? textDirectory[count]["FrontText"] : textDirectory[count]["BackText"]}
         </p>
     )
   }
@@ -246,7 +282,7 @@ function App() {
 
       {/* Card itself */}
       <div className={`cardContainer ${flip ? "flip" : ""}`} onClick={FlipCard}>
-        <FlashCard frontText={"Hello"} backText={"Also hello"}/>
+        <FlashCard/>
       </div>
 
       {/* Buttons */}
