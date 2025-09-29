@@ -342,7 +342,7 @@ function App() {
 
     // For start card, flip back around.
     if(count == 0){
-      setFlip(1);
+      setFlip(0);
       SwapCard(1);
     }
 

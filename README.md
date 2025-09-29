@@ -11,18 +11,18 @@ Time spent: 18 hours spent in total
 The following **required** functionality is completed:
 
 
-- [ ] **The app displays the title of the card set, a short description, and the total number of cards**
-  - [ ] Title of card set is displayed 
-  - [ ] A short description of the card set is displayed 
-  - [ ] A list of card pairs is created
-  - [ ] The total number of cards in the set is displayed 
-  - [ ] Card set is represented as a list of card pairs (an array of dictionaries where each dictionary contains the question and answer is perfectly fine)
-- [ ] **A single card at a time is displayed**
-  - [ ] Only one half of the information pair is displayed at a time
-- [ ] **Clicking on the card flips the card over, showing the corresponding component of the information pair**
-  - [ ] Clicking on a card flips it over, showing the back with corresponding information 
-  - [ ] Clicking on a flipped card again flips it back, showing the front
-- [ ] **Clicking on the next button displays a random new card**
+- [X] **The app displays the title of the card set, a short description, and the total number of cards**
+  - [X] Title of card set is displayed 
+  - [X] A short description of the card set is displayed 
+  - [X] A list of card pairs is created
+  - [X] The total number of cards in the set is displayed 
+  - [X] Card set is represented as a list of card pairs (an array of dictionaries where each dictionary contains the question and answer is perfectly fine)
+- [X] **A single card at a time is displayed**
+  - [X] Only one half of the information pair is displayed at a time
+- [X] **Clicking on the card flips the card over, showing the corresponding component of the information pair**
+  - [X] Clicking on a card flips it over, showing the back with corresponding information 
+  - [X] Clicking on a flipped card again flips it back, showing the front
+- [X] **Clicking on the next button displays a random new card**
 
 The following **optional** features are implemented:
 
@@ -35,26 +35,26 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you added to improve the site's functionality!
+* [X] "Flashcard Memory" , you can continually foward through cards and ALSO backtrack through EVERY card seen up to that point! 
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented required features:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='./public/Animation.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-<!-- Replace this with whatever GIF tool you used! -->
-GIF created with ...  
-<!-- Recommended tools:
-[Kap](https://getkap.co/) for macOS
-[ScreenToGif](https://www.screentogif.com/) for Windows
-[peek](https://github.com/phw/peek) for Linux. -->
+
+GIF created with ScreenToGif
 
 ## Notes
 
 Describe any challenges encountered while building the app.
 
 1. This is written roughly 3 hours in. I spent most of that time trying to figure out how to flip the flash card. Note to self: Just google how to do it yourself next time. The real challenge there was just trying to figure out why the transition wouldn't play which was because I originally had the component be the entire card itself rather than just the text. So react would replace the entire element with the new one when I used the useState() method to apply .flip to the card. Thus the transition didn't play since the value of transform technically didn't change. I'm gonna try to finish this project faster instead of getting lost like last time. 
+
+2. This is written after I finished. Roughly 8-10 hours in I realized that I did not know what I made or how it worked. So I started over (the card swapping logic that is) and instead meticulously added comments to almost everything I wrote to make sure I never got lost. Its definitely noticeable but helped a lot and I generally had an easier time figuring out what was wrong when things do go wrong. I'm definitely going to plan things out a lot more in future projects  
+
+3. Writing the "SwapCard()" logic was a HUGE pain. I had to write a ton of comments to remind myself of just what it SHOULD do as I kept forgetting and got lost. I eventually had to split part of "SwapCard()" into "GetNextCard()" to make things easier to understand. Fortunately, I think I did a decent job with naming functions and useStates so that wasn't an issue. This project reminded me to more meticulously plan things out, as I'm sure I could've done more in less time. 
 
 ## License
 
