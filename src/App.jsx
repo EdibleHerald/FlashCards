@@ -83,6 +83,14 @@ function App() {
     // "d" for "direction", given by the buttons to indicate....well, direction.
     // 0 for "back" and 1 for "foward"
 
+    // Makes sure that cards are always showing the "FrontText" when swapping
+    if(flip == 0){
+      // Front
+      //Do nothing
+    }else{
+      setFlip(0);
+    }
+
     // I'll need the length of textDirectory multiple times so I'll initalize it here.
     let textDirLength = Object.keys(textDirectory).length;
     
@@ -214,6 +222,7 @@ function App() {
     let tempVar;
     let tempArray;
     let tempArray2;
+
     // This is the NORMAL course of action. 
     // We want "count" to be a unique number each time from 1-10
 
