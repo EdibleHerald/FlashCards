@@ -6,10 +6,209 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0);
   const [flip,setFlip] = useState(0);
+  const [histDir,setHistDir] = useState([]);
+  const [currMem,setCurrMem] = useState(0);
+  const [currDir,setCurrDir] = useState([]);
+  
 
+  const textDirectory = {
+    // 0 is reserved as the "start" card ONLY
+    0:{"FrontText": "Start", "BackText": " "},
+    1:{"FrontText": "What is RPO?", "BackText": "Recovery Point Objective (RPO) measures maximum tolerable data loss, defining how often data must be backed up."},
+    2:{"FrontText": "What is a symbolic link?", "BackText": "A symbolic link is a file that refers to a file system item by storing the path to it. Think of a shortcut in Windows 10/11, its the same concept. The file merely holds the path to the actual file."},
+    3:{"FrontText": "What is RTO?", "BackText": "Recovery Time Objective (RTO) refers to the MAXIMUM time a system or service can be offline without unacceptable consequences."},
+    4:{"FrontText": "What is FISMA?", "BackText": "Mandates federal agencies and contractors to maintain adequate cybersecurity protections for sensitive systems"},
+    5:{"FrontText": "What is cryptography?", "BackText": "Crytography (or cryptology) is the science of protecting data by transforming it into a format that cannot be understood by unauthorized users. The data, though translated, needs to still be accurate, unaltered, and verifiable. "},
+    6:{"FrontText": "What is PCI DSS?", "BackText": "Payment Card Industry Data Security Standard(PCI DSS) mandates secure handling of credit card data for merchants and processors"},
+    7:{"FrontText": "What is SOAR?", "BackText": "Security Orchestration, Automation, and Response (SOAR) automates responses to alerts from SIEM and other sources. Administrators use runbooks and playbooks to define how to handle incidents. SOAR connects with ticketing systems, firewalls, EDRs, and more. "},
+    8:{"FrontText": "What is MPLS?", "BackText": "Multiprotocol Label Switching (MPLS) is a layer 2.5 technology combining Layer 2 (Data-Link) and Layer 3 (Transportation). Assigns labels for fast packet routing without full IP lookups. Optimizes traffic flow, supports quality of service (QoS). Replaced most older WAN technologies (e.g. Frame Relay, ATM)"},
+    9:{"FrontText": "What is a linux daemon?", "BackText": "Daemons are Linux services that: Start during system boot, run in the background, and are critical for the OS to function"},
+    10:{"FrontText": "What is a hash function?", "BackText": "A hash function transforms data into a fixed-length output using a one-way mathematical operation (includes bitwise operations, modular arithmetic, permutation and mixing, and more). The operation is irreversible, so the original input cannot be discerned from the output."}
+  }
+
+  // The plan:
+  // histDir will hold every previous card seen by the user
+  //    - Once user presses "foward" button, the flashcard index (the number that points to it in textDirectory), is saved to histDir
+  // currMem will be used to keep track of where the user is within histDir
+  //    - If user only presses foward, currMem will stay 0
+  //    - When user presses back, currMem will increase and follow the array back to front
+  // e.g.
+  //          Oldest                     Newest
+  //         Flashcard                  Flashcard   
+  //            ^                          ^
+  //            |                          |
+  // histDir = [1,5,2,7,3,8,0,6,3,6,8,0,10,9] , histDir length = 14 , index range: 0-13
+  //            ^                          ^
+  //            |                          |
+  //         CurrMem = 1               CurrMem = 14
+  // 
+  // I keep CurrMem = 0 to indicate that no histDir searching needs to be done
+  // "count" will be used to select text within textDirectory
+
+  // Few things to ask:
+  // 
+  // What should happen when user presses "foward"?
+  //    - Randomly chosen card appears, preferably, shouldn't be an exact copy of the previous one.
+  //      To not make this too difficult, I'll only worry about not having duplicates one after the other. 
+  //      Duplicates after that are fine.
+  //    - Previous card index gets added to histDir. Appended to the end of histDir. 
+  //      Will be done by creating a temporary variable that holds the new array before
+  //      running setHistDir(newArray)
+  //    - Previous card index also gets added to currDir. Before function run ends, we want to reset
+  //      currDir = [] so that we can restart the randomized list. We can use histDir to avoid back-to-back duplicates
+  //      
+  // What should happen when user presses "back"?
+  //    - First: Check to see if theres any items in histDir. We do this like checking the length of histDir. 
+  //             We need histDir.length > 0 to continue. Otherwise, the "back" prompt should be ignored entirely.
+  //             Since the function doesn't return any data, I will do a "return ' ' " to end the function immediately.
+  //    - Next: setCurrMem(currMem+1) to establish that function should look in histDir
+  //    - Next: We use setCount(CurrMem - 1)
+  //   
+  // How do we randomize text selection?
+  //    - We can create an array as big as the amount of cards in textDirectory.
+  //      We have to subtract 1 to account for the placeholder "start" flashcard. e.g. newArray.length = (textDirectory.length - 1)
+  //    - We can then use the Fisher-Yates Shuffle to shuffle that array. 
+  //    - We can use an additional const array "currDir" to keep track of used flashcards
+  //
+  // How do we ensure the illusion of infinite scrolling?
+  //    - We can use currDir to keep track of used flashcards. I want to show each card once before
+  //      repeating the list again but also randomized. 
+  //  
+  //
+  //
+  //
+
+  // Function to handle card
+  function SwapCard(dir){ 
+    // "dir" for "direction", given by the buttons to indicate....well, direction.
+    // 0 for "back" and 1 for "foward"
+
+    // I'll need the length of textDirectory multiple times so I'll initalize it here.
+    let textDirLength = Object.keys(textDirectory).length;
+    
+    // Lets start basic: seperate actions based on dir
+
+    if(dir == 0){ // "back"
+
+    }else if (dir == 1){ // "foward"
+      // Few things to keep track of here:
+      // - histDir
+      // - currDir
+      // - count
+      // IMPORTANT: We need to consider currMem, how will the function know if we're in histDir or not?
+      // We need to assume that currMem would have already been >0 by now
+      if(currMem > 0){ // We'd now be looking in histDir
+
+      }else if(currMem == 0){
+        // All variables here are declared but not initalized just for easy tracking purposes.
+        let randNum;
+        let tempVar;
+        let tempArray=[];
+        // This is the NORMAL course of action. 
+        // We want "count" to be a unique number each time from 1-10
+
+        randNum = genNum(textDirLength);
+        
+
+        // add randNum to currDir
+          // But ONLY if it isn't already in currDir
+          // We will also use currDir to influence the creation of randNum
+          // Will make a new function for it to reduce clutter
+        tempVar = CheckCurrDir(randNum);
+        if(tempVar == 1){
+          let newNum;
+          // number already exists within currDir. 
+          // Given our structure and randNum not calculating previously chosen numbers,
+          // this must mean that currDir is full. 
+          // So we must empty currDir
+          // Then generate a new number!
+          tempArray = [];
+          setCurrDir(tempArray);
+          
+          newNum = genNum(textDirLength);
+
+          tempArray = currDir;
+          tempArray.push(newNum);
+          setCurrDir(tempArray);
+
+          // We also have histDir here so it can get the new number.
+          // This is less strict than for currDict as histDir will hold EVERY flash card indiscriminately
+          tempArray = histDir;
+          tempArray.push(newNum);
+          setHistDir(tempArray);
+        }else{
+          // randNum DOESN'T conflict with currDir
+          // No checks needed here
+          tempArray = currDir;
+          tempArray.push(randNum);
+          setCurrDir(tempArray);
+
+          tempArray = histDir;
+          tempArray.push(randNum);
+          setHistDir(tempArray);
+        }
+        
+        // Set count = randNum
+        setCount(count);
+      }
+    }else{
+      // May write more verbose logging if needed
+      console.log("ERROR")
+    }
+
+
+  }
+
+  // Function to check currDir using randNum
+  function CheckCurrDir(randNum){
+    // Will use a counter here for checking matching amounts
+    // We set to 0 with the assumption that it will only ever return 0 or 1. (there shouldn't be copies within currDir anyways)
+    // If it returns anything else, then I'll flag it. Is practical and acts as a bit of debugging.
+    let counter = 0;
+
+    for(e in currDir){
+      if(randNum == e){
+        counter+=1;
+      }
+    }
+
+    if(counter == 0 || counter == 1){
+      return counter;
+    }else{
+      console.log("ERROR: currDir HOLDS COPIES OF INDEXES");
+      console.log("VIEW currDir OBJECT HERE:");
+      console.log(currDir);
+    }
+  }
+
+  // Function to generate pseudorandom number
+  function genNum(textDirLength){
+    let randNum;
+    let currDirLength = Object.keys(currDir).length;
+    // Generate "random" (technically pseudorandom) number for "count"
+    // Math.random produces # between 0 - 0.99
+    // Subtract 1 from textDirLength to avoid textDirectory[0] e.g. textDirectory.length = 11, Math.floor(0.99*10) means output is between 0-9
+    // Add one to the end result to avoid getting 0. Range is now 1 - (textDirectory.length-1)
+
+    // Problem: We need to return a number in case currDir is full
+    // Solution: Check to see if currDir length is same as textDirectory length - 1
+
+    if(currDirLength == (textDirLength-1)){
+      // We're under the assumption that every index is included in currDir (from 1 - textDirectory.length - 1)
+      // Therefore, by returning 1, we're guaranteeing that checkCurrDir() returns 1. So we could return really any number in range. 
+      // Probably a better way to do it, but I'm getting tired :(
+      return 1;
+    }else{
+      do{
+      randNum = Math.floor(Math.random()*(textDirLength-1)) + 1;
+      }while(randNum == count || randNum == 0 ); // Ensure randNum != previous index OR 0.
+
+      return randNum;
+    }
+  }
 
   // Function to swap card
-  function SwapCard(){
+  function FlipCard(){
     if(flip == 1){
       setFlip(flip-1);      
     }else{
@@ -23,7 +222,7 @@ function App() {
     // Needs front and back text
     return(
         <p className = {`cardText ${flip ? "flip" : ""}`}>
-          {count==0 ? frontText : backText}
+          {flip==0 ? frontText : backText}
         </p>
     )
   }
@@ -46,8 +245,18 @@ function App() {
       </div>
 
       {/* Card itself */}
-      <div className={`cardContainer ${flip ? "flip" : ""}`} onClick={SwapCard}>
+      <div className={`cardContainer ${flip ? "flip" : ""}`} onClick={FlipCard}>
         <FlashCard frontText={"Hello"} backText={"Also hello"}/>
+      </div>
+
+      {/* Buttons */}
+      <div className='buttonContainer'>
+        <button className='backButton' onClick={()=>{SwapCard(0)}}>
+          <span>Back</span>
+        </button>
+        <button className='fowardButton' onClick={()=>{SwapCard(1)}}>
+          <span>Foward</span>
+        </button>
       </div>
     </>
   )
