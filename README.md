@@ -4,7 +4,7 @@ Submitted by: Harold Escorcia
 
 This web app: Has multiple flashcards from a personal stack that I used to study for the SOCOA 1 certification by BCR cyber!
 
-Time spent: 3 hours spent in total
+Time spent: 18 hours spent in total
 
 ## Required Features
 

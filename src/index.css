@@ -80,7 +80,8 @@ button:focus-visible {
 .innerHeaderContainer{
   border: 2px solid white;
   padding: 1rem;
-  transform:translate(4px,-6px);
+  box-shadow: 10px 5px 5px white;
+  transform:translate(0px,-4px);
   /* Maybe its just because I've been staring at it for a bit, */
   /* but it feels like this small translation adds a bit of depth to the header */
 }

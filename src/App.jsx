@@ -93,12 +93,77 @@ function App() {
       // - currMem
       // - count
       // NO NEED TO MANIPULATE currDir or histDir in ANY way. We're only reading from histDir
+      
+      // A little difficult to figure out the prolem here
+      // Basically the issue (before) was that I did:
+      // setCurrMem(currMem+1)
+      // setCount(histDir(currMem))
+      //
+      // Which was COMPLETELY incorrect because as explained before, histDir is to be read right to left
+      // Anyways, I fixed it by accounting for that. 
 
-      // First, increase currMem IMMEDIATELY so we can access the previous entry
-      setCurrMem(currMem + 1);
+      // currMem NEEDs to stay at 1 or above
+      // BUT we subtract 2 to avoid newest addition to cards, just ONCE though
+      // This works fine from an odd number, but NOT from an even number
+      // If currMem = 0, then we subtract 2 only that once
 
-      setCount(currMem);
-      // Done!!
+      let histDirLength = Object.keys(histDir).length;
+      let tempVar = currMem;
+      
+      // We need to ensure that currMem STAYs above 0 though. 
+      // assume:
+      //
+      // length: 5;
+      // currMem: 3;
+      //
+      //   Current
+      //   position
+      //      ^
+      //      |
+      // [1,4,5,2,6]
+      //  ^
+      //  |
+      //  Should be able to access with currMem=5, currMem !> histDirLength. 
+      //
+
+      // Check for inital failure 
+      // e.g. pressing back after one flash card
+      //
+      //  - currMem = 0 --> 2
+      //  - histDirLength = 2 --> 0 - 1 index
+      //
+
+      // I could write paragraphs about how long it took me to figure this out....
+      // But I wont:
+      //
+      //  - created tempVar to use for testing immediately 
+      //  - checked for special case in first if-statement 
+      //    (its for the first time you enter histDir, which adds the card you JUST saw, 
+      //    so it warrants -2 to see the actual previous card instead of the same one again.)
+      //      - Also needed to have it work ONLY once. 
+      //  - Else, it acts normally UNLESS:
+      //      - tempVar + 1 > histDirLength
+      //      - tempVar == histDirLength
+      //        ^ I probably could've combined the two, but I've had enough debugging for one small project
+      //
+
+      if(histDirLength > 2 && currMem == 0 && !((tempVar +2) > histDirLength)){
+        tempVar+=2;
+        setCurrMem(prev => prev + 2);
+        setCount(histDir[histDirLength - (tempVar)]);
+      }else{
+        if(((tempVar + 1) > histDirLength)){
+          // Does nothing
+        }else{
+          tempVar+=1;
+          if(!(tempVar == histDirLength)){
+            setCurrMem(currMem + 1);
+          }
+          
+          setCount(histDir[histDirLength-tempVar]);
+        }
+      }
+
 
     }else if (d == 1){ // "foward"
       // Few things to keep track of here:
@@ -111,16 +176,24 @@ function App() {
         // Assumes we're we're backed up and need to progress to currMem = 0
         // CRITICALLY: We SHOULD NOT update histDir OR currDir 
         // This should only help to navigate histDir, not change it in any way
+        let histDirLength = Object.keys(histDir).length;
 
+        console.log("x");
+        console.log(histDir);
+        console.log(currDir);
+        console.log(currMem);
+        console.log("x");
         
-        setCount(currMem);
+        // We're counting DOWN currMem
+
+        setCount(histDir[histDirLength - currMem]);
         setCurrMem(currMem - 1);
-        // Should be as simple as that!
       }else if(currMem == 0){
         // All variables here are declared but not initalized just for easy tracking purposes.
         let randNum;
         let tempVar;
-        let tempArray=[];
+        let tempArray;
+        let tempArray2;
         // This is the NORMAL course of action. 
         // We want "count" to be a unique number each time from 1-10
 
@@ -149,8 +222,8 @@ function App() {
 
           // We also have histDir here so it can get the new number.
           // This is less strict than for currDict as histDir will hold EVERY flash card indiscriminately
-          tempArray = histDir;
-          tempArray.push(newNum);
+          tempArray2 = histDir;
+          tempArray2.push(newNum);
           setHistDir(tempArray);
           setCount(newNum);
         }else{
@@ -160,17 +233,21 @@ function App() {
           tempArray.push(randNum);
           setCurrDir(tempArray);
 
-          tempArray = histDir;
-          tempArray.push(randNum);
-          setHistDir(tempArray);
+          tempArray2 = histDir;
+          tempArray2.push(randNum);
+          setHistDir(tempArray2);
 
           setCount(randNum);
         }
+        console.log("x");
+        console.log(histDir);
         console.log(currDir);
+        console.log(currMem);
+        console.log("x");
       }
     }else{
       // May write more verbose logging if needed
-      console.log("ERROR")
+      console.log("ERROR");
     }
 
 
