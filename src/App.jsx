@@ -147,6 +147,8 @@ function App() {
       //        ^ I probably could've combined the two, but I've had enough debugging for one small project
       //
 
+
+      // I need this special case to run whenever we leave histDir again
       if(histDirLength > 2 && currMem == 0 && !((tempVar +2) > histDirLength)){
         tempVar+=2;
         setCurrMem(prev => prev + 2);
@@ -154,12 +156,15 @@ function App() {
       }else{
         if(((tempVar + 1) > histDirLength)){
           // Does nothing
+          console.log("ran");
         }else{
           tempVar+=1;
           if(!(tempVar == histDirLength)){
             setCurrMem(currMem + 1);
+            console.log("added one");
+            console.log(currMem);
+            console.log(tempVar);
           }
-          
           setCount(histDir[histDirLength-tempVar]);
         }
       }
@@ -177,73 +182,32 @@ function App() {
         // CRITICALLY: We SHOULD NOT update histDir OR currDir 
         // This should only help to navigate histDir, not change it in any way
         let histDirLength = Object.keys(histDir).length;
+        let tempVar = currMem;
 
         console.log("x");
         console.log(histDir);
         console.log(currDir);
         console.log(currMem);
         console.log("x");
+
+        // Ex. currMem = 2 --> currMem = 1 , card stays the same
+        // Tempvar = 1 --> tempVar = 0
+        // setCount(histDir[histDirLength - tempVar])
+        // HOWEVER, the else-if condition DOESN't change the card in any way.
         
         // We're counting DOWN currMem
+        tempVar-=1;
 
-        setCount(histDir[histDirLength - currMem]);
-        setCurrMem(currMem - 1);
-      }else if(currMem == 0){
-        // All variables here are declared but not initalized just for easy tracking purposes.
-        let randNum;
-        let tempVar;
-        let tempArray;
-        let tempArray2;
-        // This is the NORMAL course of action. 
-        // We want "count" to be a unique number each time from 1-10
-
-        randNum = genNum(textDirLength);
         
-        // e.g. randNum = 7 
-
-        // add randNum to currDir
-          // But ONLY if it isn't already in currDir
-          // We will also use currDir to influence the creation of randNum
-          // Will make a new function for it to reduce clutter
-        tempVar = CheckCurrDir(randNum);
-        if(tempVar == 1){
-          let newNum;
-          // number already exists within currDir. 
-          // Given our structure and randNum not calculating previously chosen numbers,
-          // this must mean that currDir is full. 
-          // We'll use tempArray = [] as a temporary currDir
-          // Then generate a new number!
-          tempArray = [];
-          
-          newNum = genNum(textDirLength);
-
-          tempArray.push(newNum);
-          setCurrDir(tempArray);
-
-          // We also have histDir here so it can get the new number.
-          // This is less strict than for currDict as histDir will hold EVERY flash card indiscriminately
-          tempArray2 = histDir;
-          tempArray2.push(newNum);
-          setHistDir(tempArray);
-          setCount(newNum);
-        }else{
-          // randNum DOESN'T conflict with currDir
-          // No checks needed here
-          tempArray = currDir;
-          tempArray.push(randNum);
-          setCurrDir(tempArray);
-
-          tempArray2 = histDir;
-          tempArray2.push(randNum);
-          setHistDir(tempArray2);
-
-          setCount(randNum);
+        if(tempVar > 0){
+          setCount(histDir[histDirLength - tempVar]);
+          setCurrMem(currMem - 1);
+        }else if(tempVar == 0){
+          setCurrMem(0);
+          GetNextCard(textDirLength);
         }
-        console.log("x");
-        console.log(histDir);
-        console.log(currDir);
-        console.log(currMem);
-        console.log("x");
+      }else if(currMem == 0){
+        GetNextCard(textDirLength);
       }
     }else{
       // May write more verbose logging if needed
@@ -252,6 +216,66 @@ function App() {
 
 
   }
+
+  //TEST
+  function GetNextCard(textDirLength){
+  // All variables here are declared but not initalized just for easy tracking purposes.
+    let randNum;
+    let tempVar;
+    let tempArray;
+    let tempArray2;
+    // This is the NORMAL course of action. 
+    // We want "count" to be a unique number each time from 1-10
+
+    randNum = genNum(textDirLength);
+    
+    // e.g. randNum = 7 
+
+    // add randNum to currDir
+      // But ONLY if it isn't already in currDir
+      // We will also use currDir to influence the creation of randNum
+      // Will make a new function for it to reduce clutter
+    tempVar = CheckCurrDir(randNum);
+    if(tempVar == 1){
+      let newNum;
+      // number already exists within currDir. 
+      // Given our structure and randNum not calculating previously chosen numbers,
+      // this must mean that currDir is full. 
+      // We'll use tempArray = [] as a temporary currDir
+      // Then generate a new number!
+      tempArray = [];
+      
+      newNum = genNum(textDirLength);
+
+      tempArray.push(newNum);
+      setCurrDir(tempArray);
+
+      // We also have histDir here so it can get the new number.
+      // This is less strict than for currDict as histDir will hold EVERY flash card indiscriminately
+      tempArray2 = histDir;
+      tempArray2.push(newNum);
+      setHistDir(tempArray2);
+      setCount(newNum);
+    }else{
+      // randNum DOESN'T conflict with currDir
+      // No checks needed here
+      tempArray = currDir;
+      tempArray.push(randNum);
+      setCurrDir(tempArray);
+
+      tempArray2 = histDir;
+      tempArray2.push(randNum);
+      setHistDir(tempArray2);
+
+      setCount(randNum);
+    }
+    console.log("x");
+    console.log(histDir);
+    console.log(currDir);
+    console.log(currMem);
+    console.log("x");
+  }
+  //TEST
 
   // Function to check currDir using randNum
   function CheckCurrDir(randNum){
