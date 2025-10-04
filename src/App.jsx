@@ -29,7 +29,7 @@ function App() {
   }
 
   // Check Guess Function
-  function checkGuess(){
+  function CheckGuess(){
     const input = formData.get("aBox");
     const txtDirAns = textDirectory[currMem]["a"];
     // If true, allow mastery, apply class
@@ -40,6 +40,21 @@ function App() {
       return 0;
     }
     
+  }
+
+  // Shuffle cards Function
+  function Shuffle(){
+    // Generate random list of numbers
+    let array = [];
+    let arrayLength = (Object.keys(textDirectory).length) - 1;
+    let tempNum; 
+
+    for(let i=0;i<arrayLength;i++){
+      tempNum = Math.floor((Math.random()*arrayLength))+1;
+      
+    }
+    
+
   }
 
   // Function to swap card
@@ -61,7 +76,7 @@ function App() {
 
   }
 
-  function checkAnswer(formData){
+  function CheckAnswer(formData){
     const input = formData.get("aBox");
     alert("You submitted: "+ input);
   }
@@ -103,7 +118,7 @@ function App() {
       </div>
       
       <div className="formContainer">
-        <form id="form" action={checkAnswer}>
+        <form id="form" action={CheckAnswer}>
           <label for="aBox">Guess the answer here:</label>
           <input type="text" id="aBox" name="aBox"></input>
           <button class="formButton" type="submit" for="form" disabled={useGuess==1 ? false : true}> <span>submit</span></button>
