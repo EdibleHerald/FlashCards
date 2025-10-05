@@ -8,10 +8,8 @@ function App() {
   const [seeMastery,setSeeMastery] = useState(0);
   const [useGuess,setUseGuess] = useState(0);
   const [flip,setFlip] = useState(0);
-  const [histDir,setHistDir] = useState([]);
-  const [currMem,setCurrMem] = useState(0);
   const [currDir,setCurrDir] = useState([]);
-  
+  const [error,setError] = useState(1);
 
   const textDirectory = {
     // 0 is reserved as the "start" card ONLY
@@ -27,6 +25,9 @@ function App() {
     9:{"FrontText": "What is a linux daemon?", "BackText": "Daemons are Linux services that: Start during system boot, run in the background, and are critical for the OS to function", "a":"critical os services"},
     10:{"FrontText": "What is a hash function?", "BackText": "A hash function transforms data into a fixed-length output using a one-way mathematical operation (includes bitwise operations, modular arithmetic, permutation and mixing, and more). The operation is irreversible, so the original input cannot be discerned from the output.", "a":"irreversible encryption"}
   }
+  const txtDirLen = Object.keys(textDirectory).length;
+
+
 
   // Check Guess Function
   function CheckGuess(){
@@ -42,6 +43,34 @@ function App() {
     
   }
 
+  // Foward function
+  function moveFoward(){
+
+    // If increasing count results in an "out of bounds":
+    //  then, reset currDir and currMem count.
+    if((count+1) > txtDirLen){
+      let array = Shuffle();
+      setCurrDir(array);
+      setCount(1);
+    }else{
+      setCount(count+1);
+    }
+
+  }
+
+  function moveBack(){
+    // if decreasing count results in index "1":
+    //  then, do not allow anymore backwards movement. 
+    
+    if((count-1) <= 1){
+      // Do nothing
+      // or maybe notify user
+      return 0;
+    }else{
+      setCount(count-1);
+    }
+  }
+
   // Shuffle cards Function
   function Shuffle(){
     // Generate random list of numbers
@@ -50,11 +79,14 @@ function App() {
     let tempNum; 
 
     for(let i=0;i<arrayLength;i++){
-      tempNum = Math.floor((Math.random()*arrayLength))+1;
-      
-    }
-    
+      do{
+        tempNum = Math.floor((Math.random()*arrayLength))+1;
+      }while(array.includes(tempNum))
 
+      array.push(tempNum);
+    }
+
+    return array;
   }
 
   // Function to swap card
@@ -90,6 +122,21 @@ function App() {
         </p>
     )
   }
+
+  //returns error message if conditions met
+  function ShowError(){
+    // if error == 1, error occured, notify user
+    if(error==1){
+      
+      return(
+        {
+
+        }
+      )
+    }else{
+
+    }
+  }
   
   return (
     <>
@@ -110,7 +157,12 @@ function App() {
 
       {/* Mastery Prompt on conditional */}
       
-      {(seeMastery) ? <div className="masteryDiv"> <p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button> </div> : <div></div>}
+      {/* {(seeMastery) ? <div className="masteryDiv"> <p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button> </div> : <div></div>} */}
+      
+      <div className="masteryDiv"> {(seeMastery) ? <><p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button></> : <><div></div></>} </div>
+
+      {/* Error Message on conditional */}
+      
 
       {/* Card itself */}
       <div className={`cardContainer ${flip ? "flip" : ""}`} onClick={FlipCard}>
@@ -119,15 +171,15 @@ function App() {
       
       <div className="formContainer">
         <form id="form" action={CheckAnswer}>
-          <label for="aBox">Guess the answer here:</label>
+          <label htmlFor="aBox">Guess the answer here:</label>
           <input type="text" id="aBox" name="aBox"></input>
-          <button class="formButton" type="submit" for="form" disabled={useGuess==1 ? false : true}> <span>submit</span></button>
+          <button className="formButton" type="submit" form="form" disabled={useGuess==1 ? false : true}> <span>submit</span></button>
         </form>
       </div>
 
       {/* Buttons */}
       <div className='buttonContainer'>
-        <button className='backButton' onClick={()=>{SwapCard(0)}}>
+        <button className='backButton fadeInOut' onClick={()=>{SwapCard(0)}}>
           <span>Back</span>
         </button>
         <button className='fowardButton' onClick={()=>{SwapCard(1)}}>
