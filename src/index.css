@@ -137,6 +137,12 @@ button:active span {
   transform:translateY(-2px);
 }
 
+.formContainer{
+  height:3rem;
+  justify-content: center;
+  align-content: center;
+}
+
 .formContainer > form{
   display:flex;
   justify-content: center;
@@ -180,9 +186,9 @@ button:active span {
   justify-content: center;
   align-items: center;
   align-content:center;
-  max-width:25rem;
+  max-width:305em;
   max-height:8rem;
-  width:25rem;
+  width:35rem;
   height:8rem;
 }
 
@@ -203,6 +209,14 @@ button:active span {
   to {
     opacity: 1.0;
   }
+}
+
+.wrongAnswer{
+  background-color: rgb(244,50,11,0.5);
+}
+
+.rightAnswer{
+  background-color: rgb(4, 214, 50,0.5);
 }
 
 
