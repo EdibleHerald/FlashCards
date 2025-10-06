@@ -15,6 +15,7 @@ function App() {
   const [error,setError] = useState(0);
   const [dir,setDir] = useState(0);
   const [masterDir, setMasterDir] = useState([]);
+  const [longestStreak,setLongestStreak] = useState(0);
   
 
   const textDirectory = {
@@ -40,6 +41,9 @@ function App() {
   function UpdateStreak(int){
     if(int == 1){
       setStreak(streak+1);
+      if((streak+1) > longestStreak){
+        setLongestStreak(streak+1);
+      }
     }else{
       setStreak(0);
     }
@@ -174,9 +178,13 @@ function App() {
       //flips
       setFlip(flip+1);
       // setUseGuess(0);
-      let arr = ansDir;
-      arr[count] = 0;
-      setAns(0);
+      console.log(ansDir);
+      console.log(count);
+      if(ansDir[count] == 3){
+        let arr = ansDir;
+        arr[count] = 0;
+        setAnsDir(arr);
+      }
     } 
 
     let len = Object.keys(currDir).length;
@@ -211,7 +219,7 @@ function App() {
       {/* Number of cards */}
       <div>
         <h4>
-          Number of cards in set: 10 | Current Streak: {streak}
+          Number of cards in set: 10 | Number of cards unmastered: {arrSize} | Current Streak: {streak} | Longest Streak: {longestStreak}
         </h4>
       </div>
 
@@ -236,7 +244,7 @@ function App() {
         <form id="form" action={CheckGuess}>
           <label htmlFor="aBox">Guess the answer here:</label>
           <input type="text" id="aBox" name="aBox"></input>
-          <button className="formButton" type="submit" form="form" disabled={ans==0 || ans==1 ? true : false}> <span>submit</span></button>
+          <button className="formButton" type="submit" form="form" disabled={ansDir[count]==0 || ansDir[count]==1 ? true : false}> <span>submit</span></button>
         </form>
       </div>
 

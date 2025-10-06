@@ -1,60 +1,66 @@
-# Web Development Project 2 - Cybersecurity Quiz
+# Web Development Project 3 - Cybersecurity FlashCards!
 
-Submitted by: Harold Escorcia
+Submitted by: **Harold Escorcia**
 
-This web app: Has multiple flashcards from a personal stack that I used to study for the SOCOA 1 certification by BCR cyber!
+This web app: **Allows users to study a few cybersecurity/IT related flashcards!**
 
-Time spent: 18 hours spent in total
+Time spent: **12** hours spent in total
 
 ## Required Features
 
 The following **required** functionality is completed:
 
-
-- [X] **The app displays the title of the card set, a short description, and the total number of cards**
-  - [X] Title of card set is displayed 
-  - [X] A short description of the card set is displayed 
-  - [X] A list of card pairs is created
-  - [X] The total number of cards in the set is displayed 
-  - [X] Card set is represented as a list of card pairs (an array of dictionaries where each dictionary contains the question and answer is perfectly fine)
-- [X] **A single card at a time is displayed**
-  - [X] Only one half of the information pair is displayed at a time
-- [X] **Clicking on the card flips the card over, showing the corresponding component of the information pair**
-  - [X] Clicking on a card flips it over, showing the back with corresponding information 
-  - [X] Clicking on a flipped card again flips it back, showing the front
-- [X] **Clicking on the next button displays a random new card**
+- [X] **The user can enter their guess into an input box *before* seeing the flipside of the card**
+  - Application features a clearly labeled input box with a submit button where users can type in a guess
+  - Clicking on the submit button with an **incorrect** answer shows visual feedback that it is wrong 
+  -  Clicking on the submit button with a **correct** answer shows visual feedback that it is correct
+- [X] **The user can navigate through an ordered list of cardss**
+  - A forward/next button displayed on the card navigates to the next card in a set sequence when clicked
+  - A previous/back button displayed on the card returns to the previous card in the set sequence when clicked
+  - Both the next and back buttons should have some visual indication that the user is at the beginning or end of the list (for example, graying out and no longer being available to click), not allowing for wrap-around navigation
 
 The following **optional** features are implemented:
 
-- [ ] Cards contain images in addition to or in place of text
-  - [ ] Some or all cards have images in place of or in addition to text
-- [ ] Cards have different visual styles such as color based on their category
-  - Example categories you can use:
-    - Difficulty: Easy/medium/hard
-    - Subject: Biology/Chemistry/Physics/Earth science
+
+- [X] Users can use a shuffle button to randomize the order of the cards
+  - Cards should remain in the same sequence (**NOT** randomized) unless the shuffle button is clicked 
+  - Cards should change to a random sequence once the shuffle button is clicked
+- [] A user’s answer may be counted as correct even when it is slightly different from the target answer
+  - Answers are considered correct even if they only partially match the answer on the card 
+  - Examples: ignoring uppercase/lowercase discrepancies, ignoring punctuation discrepancies, matching only for a particular part of the answer rather than the whole answer
+- [X] A counter displays the user’s current and longest streak of correct responses
+  - The current counter increments when a user guesses an answer correctly
+  - The current counter resets to 0 when a user guesses an answer incorrectly
+  - A separate counter tracks the longest streak, updating if the value of the current streak counter exceeds the value of the longest streak counter 
+- [X] A user can mark a card that they have mastered and have it removed from the pool of displayed cards
+  - The user can mark a card to indicate that it has been mastered
+  - Mastered cards are removed from the pool of displayed cards and added to a list of mastered cards
+
 
 The following **additional** features are implemented:
 
-* [X] "Flashcard Memory" , you can continually foward through cards and ALSO backtrack through EVERY card seen up to that point! 
+* [X] Users can only guess once! If they get it wrong or right, that card is permanently marked until deck is shuffled.
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented required features:
+Here's a walkthrough of implemented user features:
 
-<img src='./public/Animation.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='./public/FlashCardsFull.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 
-GIF created with ScreenToGif
+GIF created with ScreenToGIF!
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+1. Fortunately, I did not have many problems with this site! I ended up taking a more relaxed approach where I built logic functions one by one and used a (albeit incomplete) flowchart to better decide which functions to make first. The benefit of this approach was that even when I wanted to be lazy and just write code without planning in advance, the functions I'd already planned out was modular enough for me to not have much issue adding new stretch features since there was a clear line between functions and what data they handled. 
+I had to completely restructure my original logic because my previous one worked completely differently and did not align with the required features of this project. Here is the rough flowchart I used: 
 
-1. This is written roughly 3 hours in. I spent most of that time trying to figure out how to flip the flash card. Note to self: Just google how to do it yourself next time. The real challenge there was just trying to figure out why the transition wouldn't play which was because I originally had the component be the entire card itself rather than just the text. So react would replace the entire element with the new one when I used the useState() method to apply .flip to the card. Thus the transition didn't play since the value of transform technically didn't change. I'm gonna try to finish this project faster instead of getting lost like last time. 
+<img src='./public/FlashCardsFlowChart.jpg' title='flowchart' width='' alt='flowchart' />
 
-2. This is written after I finished. Roughly 8-10 hours in I realized that I did not know what I made or how it worked. So I started over (the card swapping logic that is) and instead meticulously added comments to almost everything I wrote to make sure I never got lost. Its definitely noticeable but helped a lot and I generally had an easier time figuring out what was wrong when things do go wrong. I'm definitely going to plan things out a lot more in future projects  
+2. The only real problem I had was with the optional feature to count certain answers as correct even if only partially so. The problem is that my flashcards just don't work that way, I could've probably implemented a solution that broke the input into an array and then compared each string with the answers for the given flashcard, but it just doesn't seem right since my flashcards are mostly made up of acronyms and I'd have to consider cases like "not xyz" and that seemed like a bit much. 
 
-3. Writing the "SwapCard()" logic was a HUGE pain. I had to write a ton of comments to remind myself of just what it SHOULD do as I kept forgetting and got lost. I eventually had to split part of "SwapCard()" into "GetNextCard()" to make things easier to understand. Fortunately, I think I did a decent job with naming functions and useStates so that wasn't an issue. This project reminded me to more meticulously plan things out, as I'm sure I could've done more in less time. 
+
+
 
 ## License
 
