@@ -52,7 +52,7 @@ function App() {
     setMasterDir(arr);
 
     if(arrSize > 1){
-      setArrSize(arr-1);
+      setArrSize(arrSize-1);
     }else{
       alert("Congrats! You mastered them all!");
     }
@@ -93,7 +93,7 @@ function App() {
 
     // If increasing count results in an "out of bounds":
     //  then, reset currDir and currMem count.
-    if((count+1) >= (txtDirLen-1)){
+    if((count+1) >= (arrSize-1)){
       // Should just NOTIFY player
       setDir(1);
       setError(1);
