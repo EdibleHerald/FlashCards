@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef} from 'react'
 import './App.css'
 
 
@@ -6,7 +6,8 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0);
   const [seeMastery,setSeeMastery] = useState(0);
-  const [useGuess,setUseGuess] = useState(0);
+  // const [useGuess,setUseGuess] = useState(0);
+  const [streak,setStreak] = useState(0);
   const [ans,setAns] = useState(0);
   const [flip,setFlip] = useState(0);
   const [currDir,setCurrDir] = useState([0]);
@@ -17,37 +18,52 @@ function App() {
   const textDirectory = {
     // 0 is reserved as the "start" card ONLY
     0:{"FrontText": "Start", "BackText": " "},
-    1:{"FrontText": "What is RPO?", "BackText": "Recovery Point Objective (RPO) measures maximum tolerable data loss, defining how often data must be backed up.", "a":"recovery point objective"},
-    2:{"FrontText": "What is a symbolic link?", "BackText": "A symbolic link is a file that refers to a file system item by storing the path to it. Think of a shortcut in Windows 10/11, its the same concept. The file merely holds the path to the actual file.", "a":"stores path to file"},
-    3:{"FrontText": "What is RTO?", "BackText": "Recovery Time Objective (RTO) refers to the MAXIMUM time a system or service can be offline without unacceptable consequences.", "a":"recovery time objective"},
-    4:{"FrontText": "What is FISMA?", "BackText": "The Federal Information Security Modernization Act(FISMA) mandates federal agencies and contractors to maintain adequate cybersecurity protections for sensitive systems","a":"federal information security modernization act"},
-    5:{"FrontText": "What is cryptography?", "BackText": "Crytography (or cryptology) is the science of protecting data by transforming it into a format that cannot be understood by unauthorized users. The data, though translated, needs to still be accurate, unaltered, and verifiable.","a":"science of protecting data"},
-    6:{"FrontText": "What is PCI DSS?", "BackText": "Payment Card Industry Data Security Standard(PCI DSS) mandates secure handling of credit card data for merchants and processors","a":"payment card industry data security standard"},
-    7:{"FrontText": "What is SOAR?", "BackText": "Security Orchestration, Automation, and Response (SOAR) automates responses to alerts from SIEM and other sources. Administrators use runbooks and playbooks to define how to handle incidents. SOAR connects with ticketing systems, firewalls, EDRs, and more.","a":"security orchestration automation and response"},
-    8:{"FrontText": "What is MPLS?", "BackText": "Multiprotocol Label Switching (MPLS) is a layer 2.5 technology combining Layer 2 (Data-Link) and Layer 3 (Transportation). Assigns labels for fast packet routing without full IP lookups. Optimizes traffic flow, supports quality of service (QoS). Replaced most older WAN technologies (e.g. Frame Relay, ATM)","a":"multi protocol label switching"},
-    9:{"FrontText": "What is a linux daemon?", "BackText": "Daemons are Linux services that: Start during system boot, run in the background, and are critical for the OS to function", "a":"critical os service"},
-    10:{"FrontText": "What is a hash function?", "BackText": "A hash function transforms data into a fixed-length output using a one-way mathematical operation (includes bitwise operations, modular arithmetic, permutation and mixing, and more). The operation is irreversible, so the original input cannot be discerned from the output.", "a":"irreversible encryption"}
+    1:{"FrontText": "What is RPO?", "BackText": "Recovery Point Objective (RPO) measures maximum tolerable data loss, defining how often data must be backed up. Answer: recovery point objective", "a":"recovery point objective"},
+    2:{"FrontText": "What is a symbolic link?", "BackText": "A symbolic link is a file that refers to a file system item by storing the path to it. Think of a shortcut in Windows 10/11, its the same concept. The file merely holds the path to the actual file. Answer: stores path to file", "a":"stores path to file"},
+    3:{"FrontText": "What is RTO?", "BackText": "Recovery Time Objective (RTO) refers to the MAXIMUM time a system or service can be offline without unacceptable consequences. Answer: recovery time objective", "a":"recovery time objective"},
+    4:{"FrontText": "What is FISMA?", "BackText": "The Federal Information Security Modernization Act(FISMA) mandates federal agencies and contractors to maintain adequate cybersecurity protections for sensitive systems. Answer: federal information security modernization act","a":"federal information security modernization act"},
+    5:{"FrontText": "What is cryptography?", "BackText": "Crytography (or cryptology) is the science of protecting data by transforming it into a format that cannot be understood by unauthorized users. The data, though translated, needs to still be accurate, unaltered, and verifiable. Answer: science of protecting data ","a":"science of protecting data"},
+    6:{"FrontText": "What is PCI DSS?", "BackText": "Payment Card Industry Data Security Standard(PCI DSS) mandates secure handling of credit card data for merchants and processors. Answer: payment card industry data security standard","a":"payment card industry data security standard"},
+    7:{"FrontText": "What is SOAR?", "BackText": "Security Orchestration, Automation, and Response (SOAR) automates responses to alerts from SIEM and other sources. Administrators use runbooks and playbooks to define how to handle incidents. SOAR connects with ticketing systems, firewalls, EDRs, and more. Answer: security orchestration automation and response","a":"security orchestration automation and response"},
+    8:{"FrontText": "What is MPLS?", "BackText": "Multiprotocol Label Switching (MPLS) is a layer 2.5 technology combining Layer 2 (Data-Link) and Layer 3 (Transportation). Assigns labels for fast packet routing without full IP lookups. Optimizes traffic flow, supports quality of service (QoS). Replaced most older WAN technologies (e.g. Frame Relay, ATM). Answer: multi protocol label switching","a":"multi protocol label switching"},
+    9:{"FrontText": "What is a linux daemon?", "BackText": "Daemons are Linux services that: Start during system boot, run in the background, and are critical for the OS to function. Answer: critical os service", "a":"critical os service"},
+    10:{"FrontText": "What is a hash function?", "BackText": "A hash function transforms data into a fixed-length output using a one-way mathematical operation (includes bitwise operations, modular arithmetic, permutation and mixing, and more). The operation is irreversible, so the original input cannot be discerned from the output. Answer: irreversible encryption", "a":"irreversible encryption"}
   }
   const txtDirLen = Object.keys(textDirectory).length;
 
 
+  // Update Streak Counter
+  function UpdateStreak(int){
+    if(int == 1){
+      setStreak(streak+1);
+    }else{
+      setStreak(0);
+    }
+  }
 
   // Check Guess Function
   function CheckGuess(formData){
-    const input = formData.get("aBox");
+    const input = formData.get("aBox").toLowerCase();
     const txtDirAns = textDirectory[currDir[count]]["a"];
-    console.log(txtDirAns);
-    // If true, allow mastery, apply class
-    if(input.includes(txtDirAns)){
-      setSeeMastery(1);
-      setAns(1);
-      let array = ansDir;
-      array.push(1);
-      setAnsDir(array);
-      return 1;
+
+    if(ansDir[count] == 3){
+      // If true, allow mastery, apply class
+      if(input.includes(txtDirAns)){
+        setSeeMastery(1);
+        setAns(1);
+        let array = ansDir;
+        array[count] = 1;
+        setAnsDir(array);
+        UpdateStreak(1);
+      }else{
+        UpdateStreak(0);
+        setAns(0);
+        let array = ansDir;
+        array[count] = 0;
+      }
     }else{
-      setAns(0);
-      return 0;
+      //nothing
+      alert("ERROR: Cannot answer same question card twice");
     }
     
   }
@@ -65,15 +81,18 @@ function App() {
     }else if(currDirLength > 1){
       // Needs to avoid case where currDir.length == 1
       setError(0);
-      setUseGuess(1);
+      // setUseGuess(1);
       setCount(count+1);
+      setAns(ansDir[count+1]);
       setSeeMastery(0);
     }else{
       let array = Shuffle();
       setCurrDir(array["currDirArr"]);
-      setUseGuess(1);
+      setAnsDir(array["ansArr"]);
+      // setUseGuess(1);
       setError(0);
       setCount(0);
+      setAns(3);
       setFlip(0);
     }
 
@@ -90,8 +109,8 @@ function App() {
       setError(1);
     }else{
       setError(0);
-      setUseGuess(0);
       setCount(count-1);
+      setAns(ansDir[count-1]);
     }
   }
 
@@ -113,7 +132,7 @@ function App() {
     }
 
     for(let i=0;i<arrayLength;i++){
-      arr2.push(0);
+      arr2.push(3);
     }
 
     let array = {
@@ -132,13 +151,17 @@ function App() {
     }else{
       //flips
       setFlip(flip+1);
-      setUseGuess(0);
+      // setUseGuess(0);
+      let arr = ansDir;
+      arr[count] = 0;
+      setAns(0);
     } 
 
     let len = Object.keys(currDir).length;
     if(len == 1){
       setFlip(0);
       moveFoward();
+      
     }
 
   }
@@ -166,7 +189,7 @@ function App() {
       {/* Number of cards */}
       <div>
         <h4>
-          Number of cards in set: 10
+          Number of cards in set: 10 | Current Streak: {streak}
         </h4>
       </div>
 
@@ -187,11 +210,11 @@ function App() {
         <FlashCard/>
       </div>
       
-      <div className={`formContainer ${ans ? "rightAnswer" : "wrongAnswer"}`}>
+      <div className={`formContainer ${ans == 1 ? "rightAnswer" : "wrongAnswer"}`}>
         <form id="form" action={CheckGuess}>
           <label htmlFor="aBox">Guess the answer here:</label>
           <input type="text" id="aBox" name="aBox"></input>
-          <button className="formButton" type="submit" form="form" disabled={useGuess==0 ? true : false}> <span>submit</span></button>
+          <button className="formButton" type="submit" form="form" disabled={ans==0 || ans==1 ? true : false}> <span>submit</span></button>
         </form>
       </div>
 
@@ -207,6 +230,8 @@ function App() {
           let array = Shuffle();
           console.log(array["currDirArr"]);
           setCurrDir(array["currDirArr"]);
+          setAnsDir(array["ansArr"]);
+          setAns(3);
           setCount(0);
           setFlip(0);
         }}> 
