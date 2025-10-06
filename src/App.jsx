@@ -14,6 +14,8 @@ function App() {
   const [ansDir,setAnsDir] = useState([]);
   const [error,setError] = useState(0);
   const [dir,setDir] = useState(0);
+  const [masterDir, setMasterDir] = useState([]);
+  
 
   const textDirectory = {
     // 0 is reserved as the "start" card ONLY
@@ -29,8 +31,10 @@ function App() {
     9:{"FrontText": "What is a linux daemon?", "BackText": "Daemons are Linux services that: Start during system boot, run in the background, and are critical for the OS to function. Answer: critical os service", "a":"critical os service"},
     10:{"FrontText": "What is a hash function?", "BackText": "A hash function transforms data into a fixed-length output using a one-way mathematical operation (includes bitwise operations, modular arithmetic, permutation and mixing, and more). The operation is irreversible, so the original input cannot be discerned from the output. Answer: irreversible encryption", "a":"irreversible encryption"}
   }
-  const txtDirLen = Object.keys(textDirectory).length;
 
+  const txtDirLen = Object.keys(textDirectory).length;
+  const [arrSize,setArrSize] = useState(txtDirLen-1);
+  
 
   // Update Streak Counter
   function UpdateStreak(int){
@@ -39,6 +43,21 @@ function App() {
     }else{
       setStreak(0);
     }
+  }
+
+  // Function to take a card out of deck
+  function masterCard(){
+    let arr = masterDir;
+    arr.push(count);
+    setMasterDir(arr);
+
+    if(arrSize > 1){
+      setArrSize(arr-1);
+    }else{
+      alert("Congrats! You mastered them all!");
+    }
+
+    alert("Card #" + count + " removed! Will be gone in next shuffle!")
   }
 
   // Check Guess Function
@@ -120,13 +139,14 @@ function App() {
     let arr1 = [];
     let arr2 = [];
     
-    let arrayLength = (Object.keys(textDirectory).length) - 1;
+    let arrayLength = arrSize;
+    let masterDirCopy = masterDir;
     let tempNum; 
 
     for(let i=0;i<arrayLength;i++){
       do{
         tempNum = Math.floor((Math.random()*arrayLength))+1;
-      }while(arr1.includes(tempNum))
+      }while(arr1.includes(tempNum));
 
       arr1.push(tempNum);
     }
@@ -134,6 +154,8 @@ function App() {
     for(let i=0;i<arrayLength;i++){
       arr2.push(3);
     }
+
+    console.log(arr1);
 
     let array = {
       "currDirArr":arr1,
@@ -198,7 +220,7 @@ function App() {
       {/* {(seeMastery) ? <div className="masteryDiv"> <p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button> </div> : <div></div>} */}
       
       <div className="extraDiv fadeIn"> 
-        {(seeMastery) ? <div className="masteryDiv"><p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button></div> : <><div></div></>} 
+        {(seeMastery) ? <div className="masteryDiv"><p>Mastered?</p> <button className="formButton" onClick={()=>{masterCard()}}><span>Remove from deck</span></button></div> : <><div></div></>} 
         
         {/* Error Message on conditional */}
         {(error) ? <><p>You cannot go further {(dir) ? "foward! You can shuffle to get a new set of cards!" : "back!" }</p></> :<></>}
