@@ -9,7 +9,7 @@ function App() {
   const [useGuess,setUseGuess] = useState(0);
   const [flip,setFlip] = useState(0);
   const [currDir,setCurrDir] = useState([]);
-  const [error,setError] = useState(1);
+  const [error,setError] = useState(0);
 
   const textDirectory = {
     // 0 is reserved as the "start" card ONLY
@@ -65,7 +65,7 @@ function App() {
     if((count-1) <= 1){
       // Do nothing
       // or maybe notify user
-      return 0;
+      setError(1);
     }else{
       setCount(count-1);
     }
@@ -122,21 +122,6 @@ function App() {
         </p>
     )
   }
-
-  //returns error message if conditions met
-  function ShowError(){
-    // if error == 1, error occured, notify user
-    if(error==1){
-      
-      return(
-        {
-
-        }
-      )
-    }else{
-
-    }
-  }
   
   return (
     <>
@@ -159,9 +144,12 @@ function App() {
       
       {/* {(seeMastery) ? <div className="masteryDiv"> <p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button> </div> : <div></div>} */}
       
-      <div className="masteryDiv"> {(seeMastery) ? <><p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button></> : <><div></div></>} </div>
-
-      {/* Error Message on conditional */}
+      <div className="extraDiv fadeIn"> 
+        {(seeMastery) ? <div className="masteryDiv"><p>Mastered?</p> <button className="formButton"><span>Remove from deck</span></button></div> : <><div></div></>} 
+        
+        {/* Error Message on conditional */}
+        {(error) ? <><p>You cannot go further!</p></> :<></>}
+      </div>
       
 
       {/* Card itself */}
@@ -185,7 +173,7 @@ function App() {
         <button className='fowardButton' onClick={()=>{SwapCard(1)}}>
           <span>Foward</span>
         </button>
-        <button className ="shuffleButton" > 
+        <button className ="shuffleButton"> 
           <span>Shuffle</span>
         </button>
         {/* ADD ONCLICK FUNCTION TO SHUFFLE BUTTON */}
